@@ -1,5 +1,7 @@
 import Header from "@/app/Header";
-import { Params } from "next/navigation";
+interface Params {
+  id: string;
+}
 
 interface Item {
   id: number;
