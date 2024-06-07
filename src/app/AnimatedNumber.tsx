@@ -1,32 +1,39 @@
 import React, { useState, useEffect } from "react";
 
-const AnimatedNumber = ({ value }) => {
+interface AnimatedNumberProps {
+  value: number;
+}
+
+const AnimatedNumber: React.FC<AnimatedNumberProps> = ({ value }) => {
   const [animatedValue, setAnimatedValue] = useState(0);
   const [isAnimating, setIsAnimating] = useState(true);
 
   useEffect(() => {
-    let animationInterval;
+    let animationInterval: NodeJS.Timeout | undefined;
 
     if (isAnimating) {
       animationInterval = setInterval(() => {
         setAnimatedValue(Math.floor(Math.random() * 900000) + 100000);
       }, 100);
-    } else {
-      clearInterval(animationInterval);
     }
 
     const timeoutId = setTimeout(() => {
       setIsAnimating(false);
       setAnimatedValue(value);
+      if (animationInterval) {
+        clearInterval(animationInterval);
+      }
     }, 2000);
 
     return () => {
-      clearInterval(animationInterval);
+      if (animationInterval) {
+        clearInterval(animationInterval);
+      }
       clearTimeout(timeoutId);
     };
   }, [isAnimating, value]);
 
-  const formatNumber = (num) => {
+  const formatNumber = (num: number) => {
     const formattedNum = num.toString().padStart(6, "0");
     return formattedNum.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
